@@ -11,6 +11,7 @@ pandas = "*"
 datetime = "*"
 altair = "*"
 pydeck = "*"
+json = "*"
 
 [requires]
 python_version = "3.7"
