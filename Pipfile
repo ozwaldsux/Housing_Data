@@ -6,13 +6,11 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-pandas = "*"
 streamlit = "*"
-altair = "*"
-collections = "*"
-pydeck = "*"
+pandas = "*"
 datetime = "*"
-json = "*"
+altair = "*"
+pydeck = "*"
 
 [requires]
 python_version = "3.7"
