@@ -452,8 +452,9 @@ df2 = df2.rename(columns={'index':'County', 0:'count'})
 # Side Bar #######################################################
 
 
-st.sidebar.subheader('Exploratory Dashboard App of Irish Housing Prices')
+st.sidebar.header('Exploratory Dashboard App of Irish Housing Prices')
 app_mode = st.sidebar.radio('Select mode', ('Home', 'Geoheatmap', 'Data Tables', 'Forcasting', 'Notebook', 'Resources'))
+st.sidebar.subheader("Select Chart: ")
 
 
 
@@ -464,345 +465,353 @@ if app_mode == 'Home':
 	st.write("*Disclaimer* Dataset has been cleaned and outliers have been removed.")
 
 # Graphing Function - Counts #############################################################
-	Counts = alt.Chart(df2, width=800, height=800).mark_bar().encode(x="County", y="count", color="County")
-	st.header("Property Count By County")
-	st.write("This chart shows the total number of properties sold by County")
-	st.altair_chart(Counts)
+	Property_Count_County = st.sidebar.checkbox("Property Count By County")
+	if Property_Count_County:
+		Counts = alt.Chart(df2, width=800, height=800).mark_bar().encode(x="County", y="count", color="County")
+		st.header("Property Count By County")
+		st.write("This chart shows the total number of properties sold by County")
+		st.altair_chart(Counts)
 
 # Graphing Function - Prices #############################################################
 
-	
-	Prices_mean = alt.Chart(county_price, width=800, height=800).mark_bar().encode(x="County", y="Price", color="County")
-	st.header("Mean Price By County")
-	st.write("This chart shows the mean price of properties sold by County between 2010-2020")
-	st.altair_chart(Prices_mean)
+	Price_Mean_county = st.sidebar.checkbox("Mean Price By County")
+	if Price_Mean_county:
+		Prices_mean = alt.Chart(county_price, width=800, height=800).mark_bar().encode(x="County", y="Price", color="County")
+		st.header("Mean Price By County")
+		st.write("This chart shows the mean price of properties sold by County between 2010-2020")
+		st.altair_chart(Prices_mean)
 
 #Scatter Plot Graph #######################################################
 
-
-	st.header("Prices Over Past Decade")
-	st.write("This chart shows distribution of prices over the past decade")
-	alt.data_transformers.disable_max_rows()
-	prices_scatter = alt.Chart(scatter_data, width=800, height=800).mark_circle(size=60).encode(x='Date:T', y='Price', color='Price', tooltip=['Date:T', 'Price', 'County'])
-	st.altair_chart(prices_scatter)
+	Price_scatterplot = st.sidebar.checkbox("Prices Over Past Decade")
+	if Price_scatterplot:
+		st.header("Prices Over Past Decade")
+		st.write("This chart shows a sample distribution of prices over the past decade")
+		alt.data_transformers.disable_max_rows()
+		prices_scatter = alt.Chart(scatter_data, width=800, height=800).mark_circle(size=60).encode(x='Date:T', y='Price', color='Price', tooltip=['Date:T', 'Price', 'County'])
+		st.altair_chart(prices_scatter)
 
 
 # Graphing Function - Prices over time #############################################################
 
 
-	
-	st.header("Price Trend Over Decade By County")
-	st.write("These charts display the price trend over time by individual county and also nationwide.")
-	price_over_time = st.selectbox("Select County: ", ("Nationwide", "Dublin", "Cork","Kildare","Wicklow","Meath", "Limerick","Wexford", "Wicklow","Kerry","Tipperary","Louth","Waterford","Donegal", "Mayo","Clare","Westmeath","Cavan","Sligo","Roscommon", "Laois", "Kilkenny ", "Offaly", "Carlow", "Leitrim", "Monaghan", "Longford"))
+	Price_trend = st.sidebar.checkbox("Price Trend Line Over Decade By County")
+	if Price_trend:
+		st.header("Price Trend Over Decade By County")
+		st.write("These charts display the price trend over time by individual county and also nationwide.")
+		price_over_time = st.selectbox("Select County: ", ("Nationwide", "Dublin", "Cork","Kildare","Wicklow","Meath", "Limerick","Wexford", "Wicklow","Kerry","Tipperary","Louth","Waterford","Donegal", "Mayo","Clare","Westmeath","Cavan","Sligo","Roscommon", "Laois", "Kilkenny ", "Offaly", "Carlow", "Leitrim", "Monaghan", "Longford"))
 
-	if price_over_time == "Nationwide":
-		by_county = alt.Chart(year_price,width=800, height=800).mark_line().encode(x="year:O", y="mean(Price)", tooltip=["mean(Price)"])
-		st.write("Nationwide Average Price Per Year")
-		st.altair_chart(by_county)
-
-
-	elif price_over_time == "Dublin":
-		Dublin= alt.Chart(Dublin_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='black') 
-		st.write("Dublin Average Price Per Year") 
-		st.altair_chart(Dublin)	
-
-	elif price_over_time == "Cork":
-		Cork= alt.Chart(Cork_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='cyan') 
-		st.write("Cork Average Price Per Year") 
-		st.altair_chart(Cork)
+		if price_over_time == "Nationwide":
+			by_county = alt.Chart(year_price,width=800, height=800).mark_line().encode(x="year:O", y="mean(Price)", tooltip=["mean(Price)"])
+			st.write("Nationwide Average Price Per Year")
+			st.altair_chart(by_county)
 
 
-	elif price_over_time == "Kildare":
-		Kildare= alt.Chart(Kildare_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='brown')
-		st.write("Kildare Average Price Per Year") 
-		st.altair_chart(Kildare)
+		elif price_over_time == "Dublin":
+			Dublin= alt.Chart(Dublin_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='black') 
+			st.write("Dublin Average Price Per Year") 
+			st.altair_chart(Dublin)	
+
+		elif price_over_time == "Cork":
+			Cork= alt.Chart(Cork_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='cyan') 
+			st.write("Cork Average Price Per Year") 
+			st.altair_chart(Cork)
 
 
-	elif price_over_time == "Galway":
-		Galway= alt.Chart(Galway_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='purple') 
-		st.write("Galway Average Price Per Year") 
-		st.altair_chart(Galway)
+		elif price_over_time == "Kildare":
+			Kildare= alt.Chart(Kildare_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='brown')
+			st.write("Kildare Average Price Per Year") 
+			st.altair_chart(Kildare)
 
 
-	elif price_over_time == "Meath":
-		Meath= alt.Chart(Meath_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='purple') 
-		st.write("Meath Average Price Per Year") 
-		st.altair_chart(Meath)
+		elif price_over_time == "Galway":
+			Galway= alt.Chart(Galway_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='purple') 
+			st.write("Galway Average Price Per Year") 
+			st.altair_chart(Galway)
 
 
-	elif price_over_time == "Limerick":
-		Limerick= alt.Chart(Limerick_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='red') 
-		st.write("Limerick Average Price Per Year") 
-		st.altair_chart(Limerick)
+		elif price_over_time == "Meath":
+			Meath= alt.Chart(Meath_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='purple') 
+			st.write("Meath Average Price Per Year") 
+			st.altair_chart(Meath)
 
 
-	elif price_over_time == "Wexford":
-		Wexford= alt.Chart(Wexford_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='green') 
-		st.write("Wexford Average Price Per Year") 
-		st.altair_chart(Wexford)
+		elif price_over_time == "Limerick":
+			Limerick= alt.Chart(Limerick_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='red') 
+			st.write("Limerick Average Price Per Year") 
+			st.altair_chart(Limerick)
 
 
-	elif price_over_time == "Wicklow":
-		Wicklow= alt.Chart(Wicklow_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='black') 
-		st.write("Wicklow Average Price Per Year") 
-		st.altair_chart(Wicklow)
+		elif price_over_time == "Wexford":
+			Wexford= alt.Chart(Wexford_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='green') 
+			st.write("Wexford Average Price Per Year") 
+			st.altair_chart(Wexford)
 
 
-	elif price_over_time == "Kerry":
-		Kerry= alt.Chart(Kerry_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='pink') 
-		st.write("Kerry Average Price Per Year") 
-		st.altair_chart(Kerry)
+		elif price_over_time == "Wicklow":
+			Wicklow= alt.Chart(Wicklow_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='black') 
+			st.write("Wicklow Average Price Per Year") 
+			st.altair_chart(Wicklow)
 
 
-	elif price_over_time == "Tipperary":
-		Tipperary= alt.Chart(Tipperary_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='orange') 
-		st.write("Tipperary Average Price Per Year") 
-		st.altair_chart(Tipperary)
+		elif price_over_time == "Kerry":
+			Kerry= alt.Chart(Kerry_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='pink') 
+			st.write("Kerry Average Price Per Year") 
+			st.altair_chart(Kerry)
 
 
-	elif price_over_time == "Louth":
-		Louth= alt.Chart(Louth_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='green') 
-		st.write("Louth Average Price Per Year") 
-		st.altair_chart(Louth)
+		elif price_over_time == "Tipperary":
+			Tipperary= alt.Chart(Tipperary_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='orange') 
+			st.write("Tipperary Average Price Per Year") 
+			st.altair_chart(Tipperary)
 
 
-	elif price_over_time == "Waterford":
-		Waterford= alt.Chart(Waterford_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='red') 
-		st.write("Waterford Average Price Per Year") 
-		st.altair_chart(Waterford)
+		elif price_over_time == "Louth":
+			Louth= alt.Chart(Louth_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='green') 
+			st.write("Louth Average Price Per Year") 
+			st.altair_chart(Louth)
 
 
-	elif price_over_time == "Donegal":
-		Donegal= alt.Chart(Donegal_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='green') 
-		st.write("Donegal Average Price Per Year") 
-		st.altair_chart(Donegal)
+		elif price_over_time == "Waterford":
+			Waterford= alt.Chart(Waterford_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='red') 
+			st.write("Waterford Average Price Per Year") 
+			st.altair_chart(Waterford)
 
 
-	elif price_over_time == "Mayo":
-		Mayo= alt.Chart(Mayo_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='black') 
-		st.write("Mayo Average Price Per Year") 
-		st.altair_chart(Mayo)
+		elif price_over_time == "Donegal":
+			Donegal= alt.Chart(Donegal_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='green') 
+			st.write("Donegal Average Price Per Year") 
+			st.altair_chart(Donegal)
 
 
-	elif price_over_time == "Clare":
-		Clare= alt.Chart(Clare_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='red') 
-		st.write("Clare Average Price Per Year") 
-		st.altair_chart(Clare)
+		elif price_over_time == "Mayo":
+			Mayo= alt.Chart(Mayo_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='black') 
+			st.write("Mayo Average Price Per Year") 
+			st.altair_chart(Mayo)
 
 
-	elif price_over_time == "Westmeath":
-		Westmeath= alt.Chart(Westmeath_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='cyan') 
-		st.write("Westmeath Average Price Per Year") 
-		st.altair_chart(Westmeath)
+		elif price_over_time == "Clare":
+			Clare= alt.Chart(Clare_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='red') 
+			st.write("Clare Average Price Per Year") 
+			st.altair_chart(Clare)
 
 
-	elif price_over_time == "Cavan":
-		Cavan= alt.Chart(Cavan_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='orange') 
-		st.write("Cavan Average Price Per Year") 
-		st.altair_chart(Cavan)
+		elif price_over_time == "Westmeath":
+			Westmeath= alt.Chart(Westmeath_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='cyan') 
+			st.write("Westmeath Average Price Per Year") 
+			st.altair_chart(Westmeath)
 
 
-	elif price_over_time == "Sligo":
-		Sligo= alt.Chart(Sligo_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='blue') 
-		st.write("Sligo Average Price Per Year") 
-		st.altair_chart(Sligo)
+		elif price_over_time == "Cavan":
+			Cavan= alt.Chart(Cavan_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='orange') 
+			st.write("Cavan Average Price Per Year") 
+			st.altair_chart(Cavan)
 
-	elif price_over_time == "Roscommon":
-		Roscommon= alt.Chart(Roscommon_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='grey') 
-		st.write("Roscommon Average Price Per Year") 
-		st.altair_chart(Roscommon)
 
-	elif price_over_time == "Laois":
-		Laois= alt.Chart(Laois_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='blue') 
-		st.write("Laois Average Price Per Year") 
-		st.altair_chart(Laois)
+		elif price_over_time == "Sligo":
+			Sligo= alt.Chart(Sligo_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='blue') 
+			st.write("Sligo Average Price Per Year") 
+			st.altair_chart(Sligo)
 
-	elif price_over_time == "Kilkenny":
-		Kilkenny= alt.Chart(Kilkenny_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='grey') 
-		st.write("Kilkenny Average Price Per Year") 
-		st.altair_chart(Kilkenny)
+		elif price_over_time == "Roscommon":
+			Roscommon= alt.Chart(Roscommon_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='grey') 
+			st.write("Roscommon Average Price Per Year") 
+			st.altair_chart(Roscommon)
 
-	elif price_over_time == "Offaly":
-		Offaly= alt.Chart(Offaly_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='brown') 
-		st.write("Offaly Average Price Per Year") 
-		st.altair_chart(Offaly)
+		elif price_over_time == "Laois":
+			Laois= alt.Chart(Laois_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='blue') 
+			st.write("Laois Average Price Per Year") 
+			st.altair_chart(Laois)
 
-	elif price_over_time == "Carlow":
-		Carlow= alt.Chart(Carlow_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='blue') 
-		st.write("Carlow Average Price Per Year") 
-		st.altair_chart(Carlow)
+		elif price_over_time == "Kilkenny":
+			Kilkenny= alt.Chart(Kilkenny_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='grey') 
+			st.write("Kilkenny Average Price Per Year") 
+			st.altair_chart(Kilkenny)
 
-	elif price_over_time == "Leitrim":
-		Leitrim= alt.Chart(Leitrim_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='orange') 
-		st.write("Leitrim Average Price Per Year") 
-		st.altair_chart(Leitrim)
+		elif price_over_time == "Offaly":
+			Offaly= alt.Chart(Offaly_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='brown') 
+			st.write("Offaly Average Price Per Year") 
+			st.altair_chart(Offaly)
 
-	elif price_over_time == "Monaghan":
-		Monaghan= alt.Chart(Monaghan_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='pink') 
-		st.write("Monaghan Average Price Per Year") 
-		st.altair_chart(Monaghan)
+		elif price_over_time == "Carlow":
+			Carlow= alt.Chart(Carlow_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='blue') 
+			st.write("Carlow Average Price Per Year") 
+			st.altair_chart(Carlow)
 
-	elif price_over_time == "Longford":
-		Longford= alt.Chart(Longford_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='cyan') 
-		st.write("Longford Average Price Per Year") 
-		st.altair_chart(Longford)
+		elif price_over_time == "Leitrim":
+			Leitrim= alt.Chart(Leitrim_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='orange') 
+			st.write("Leitrim Average Price Per Year") 
+			st.altair_chart(Leitrim)
+
+		elif price_over_time == "Monaghan":
+			Monaghan= alt.Chart(Monaghan_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='pink') 
+			st.write("Monaghan Average Price Per Year") 
+			st.altair_chart(Monaghan)
+
+		elif price_over_time == "Longford":
+			Longford= alt.Chart(Longford_price,width=800, height=800).mark_line().encode(x="year:O", y="Price").configure_mark(opacity=1, color='cyan') 
+			st.write("Longford Average Price Per Year") 
+			st.altair_chart(Longford)
 
 
 
 #  Boxplots ######################################################################
-	st.header("Price Distribution By County")
-	st.write("These charts display the price distribution by county over the last decade.")
-	Boxplot = st.selectbox("Select County: ", ("Dublin", "Cork","Kildare","Wicklow","Meath", "Limerick","Wexford", "Wicklow","Kerry","Tipperary","Louth","Waterford","Donegal", "Mayo","Clare","Westmeath","Cavan","Sligo","Roscommon", "Laois", "Kilkenny ", "Offaly", "Carlow", "Leitrim", "Monaghan", "Longford"))
+	
+	Price_distribution_county = st.sidebar.checkbox("Price Distribution By County")
+	if Price_distribution_county:
+		st.header("Price Distribution By County")
+		st.write("These charts display the price distribution by county over the last decade.")
+		Boxplot = st.selectbox("Select County: ", ("Dublin", "Cork","Kildare","Wicklow","Meath", "Limerick","Wexford", "Wicklow","Kerry","Tipperary","Louth","Waterford","Donegal", "Mayo","Clare","Westmeath","Cavan","Sligo","Roscommon", "Laois", "Kilkenny ", "Offaly", "Carlow", "Leitrim", "Monaghan", "Longford"))
 
 
-	if Boxplot == "Dublin":
-		Dublin = alt.Chart(Dublin_boxplot, width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='black') 
-		st.write("Dublin Price Range") 
-		st.altair_chart(Dublin)
+		if Boxplot == "Dublin":
+			Dublin = alt.Chart(Dublin_boxplot, width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='black') 
+			st.write("Dublin Price Range") 
+			st.altair_chart(Dublin)
 
 
 
 
-	elif Boxplot == "Cork":
-		Cork= alt.Chart(Cork_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='cyan') 
-		st.write("Cork Price Range") 
-		st.altair_chart(Cork)
+		elif Boxplot == "Cork":
+			Cork= alt.Chart(Cork_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='cyan') 
+			st.write("Cork Price Range") 
+			st.altair_chart(Cork)
 
 
-	elif Boxplot == "Kildare":
-		Kildare= alt.Chart(Kildare_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='brown')
-		st.write("Kildare Price Range") 
-		st.altair_chart(Kildare)
+		elif Boxplot == "Kildare":
+			Kildare= alt.Chart(Kildare_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='brown')
+			st.write("Kildare Price Range") 
+			st.altair_chart(Kildare)
 
 
-	elif Boxplot == "Galway":
-		Galway= alt.Chart(Galway_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='purple') 
-		st.write("Galway Price Range") 
-		st.altair_chart(Galway)
+		elif Boxplot == "Galway":
+			Galway= alt.Chart(Galway_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='purple') 
+			st.write("Galway Price Range") 
+			st.altair_chart(Galway)
 
 
-	elif Boxplot == "Meath":
-		Meath= alt.Chart(Meath_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='purple') 
-		st.write("Meath Price Range") 
-		st.altair_chart(Meath)
+		elif Boxplot == "Meath":
+			Meath= alt.Chart(Meath_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='purple') 
+			st.write("Meath Price Range") 
+			st.altair_chart(Meath)
 
 
-	elif Boxplot == "Limerick":
-		Limerick= alt.Chart(Limerick_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='red') 
-		st.write("Limerick Price Range") 
-		st.altair_chart(Limerick)
+		elif Boxplot == "Limerick":
+			Limerick= alt.Chart(Limerick_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='red') 
+			st.write("Limerick Price Range") 
+			st.altair_chart(Limerick)
 
 
-	elif Boxplot == "Wexford":
-		Wexford= alt.Chart(Wexford_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='green') 
-		st.write("Wexford Price Range") 
-		st.altair_chart(Wexford)
+		elif Boxplot == "Wexford":
+			Wexford= alt.Chart(Wexford_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='green') 
+			st.write("Wexford Price Range") 
+			st.altair_chart(Wexford)
 
 
-	elif Boxplot == "Wicklow":
-		Wicklow= alt.Chart(Wicklow_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='black') 
-		st.write("Wicklow Price Range") 
-		st.altair_chart(Wicklow)
+		elif Boxplot == "Wicklow":
+			Wicklow= alt.Chart(Wicklow_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='black') 
+			st.write("Wicklow Price Range") 
+			st.altair_chart(Wicklow)
 
 
-	elif Boxplot == "Kerry":
-		Kerry= alt.Chart(Kerry_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='pink') 
-		st.write("Kerry Price Range") 
-		st.altair_chart(Kerry)
+		elif Boxplot == "Kerry":
+			Kerry= alt.Chart(Kerry_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='pink') 
+			st.write("Kerry Price Range") 
+			st.altair_chart(Kerry)
 
 
-	elif Boxplot == "Tipperary":
-		Tipperary= alt.Chart(Tipperary_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='orange') 
-		st.write("Tipperary Price Range") 
-		st.altair_chart(Tipperary)
+		elif Boxplot == "Tipperary":
+			Tipperary= alt.Chart(Tipperary_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='orange') 
+			st.write("Tipperary Price Range") 
+			st.altair_chart(Tipperary)
 
 
-	elif Boxplot == "Louth":
-		Louth= alt.Chart(Louth_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='green') 
-		st.write("Louth Price Range") 
-		st.altair_chart(Louth)
+		elif Boxplot == "Louth":
+			Louth= alt.Chart(Louth_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='green') 
+			st.write("Louth Price Range") 
+			st.altair_chart(Louth)
 
 
-	elif Boxplot == "Waterford":
-		Waterford= alt.Chart(Waterford_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='red') 
-		st.write("Waterford Price Range") 
-		st.altair_chart(Waterford)
+		elif Boxplot == "Waterford":
+			Waterford= alt.Chart(Waterford_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='red') 
+			st.write("Waterford Price Range") 
+			st.altair_chart(Waterford)
 
 
-	elif Boxplot == "Donegal":
-		Donegal= alt.Chart(Donegal_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='green') 
-		st.write("Donegal Price Range") 
-		st.altair_chart(Donegal)
+		elif Boxplot == "Donegal":
+			Donegal= alt.Chart(Donegal_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='green') 
+			st.write("Donegal Price Range") 
+			st.altair_chart(Donegal)
 
 
-	elif Boxplot == "Mayo":
-		Mayo= alt.Chart(Mayo_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='black') 
-		st.write("Mayo Price Range") 
-		st.altair_chart(Mayo)
+		elif Boxplot == "Mayo":
+			Mayo= alt.Chart(Mayo_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='black') 
+			st.write("Mayo Price Range") 
+			st.altair_chart(Mayo)
 
 
-	elif Boxplot == "Clare":
-		Clare= alt.Chart(Clare_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='red') 
-		st.write("Clare Price Range") 
-		st.altair_chart(Clare)
+		elif Boxplot == "Clare":
+			Clare= alt.Chart(Clare_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='red') 
+			st.write("Clare Price Range") 
+			st.altair_chart(Clare)
 
 
-	elif Boxplot == "Westmeath":
-		Westmeath= alt.Chart(Westmeath_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='cyan') 
-		st.write("Westmeath Price Range") 
-		st.altair_chart(Westmeath)
+		elif Boxplot == "Westmeath":
+			Westmeath= alt.Chart(Westmeath_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='cyan') 
+			st.write("Westmeath Price Range") 
+			st.altair_chart(Westmeath)
 
 
-	elif Boxplot == "Cavan":
-		Cavan= alt.Chart(Cavan_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='orange') 
-		st.write("Cavan Price Range") 
-		st.altair_chart(Cavan)
+		elif Boxplot == "Cavan":
+			Cavan= alt.Chart(Cavan_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='orange') 
+			st.write("Cavan Price Range") 
+			st.altair_chart(Cavan)
 
 
-	elif Boxplot == "Sligo":
-		Sligo= alt.Chart(Sligo_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='blue') 
-		st.write("Sligo Price Range") 
-		st.altair_chart(Sligo)
+		elif Boxplot == "Sligo":
+			Sligo= alt.Chart(Sligo_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='blue') 
+			st.write("Sligo Price Range") 
+			st.altair_chart(Sligo)
 
-	elif Boxplot == "Roscommon":
-		Roscommon= alt.Chart(Roscommon_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='grey') 
-		st.write("Roscommon Price Range") 
-		st.altair_chart(Roscommon)
+		elif Boxplot == "Roscommon":
+			Roscommon= alt.Chart(Roscommon_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='grey') 
+			st.write("Roscommon Price Range") 
+			st.altair_chart(Roscommon)
 
-	elif Boxplot == "Laois":
-		Laois= alt.Chart(Laois_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='blue') 
-		st.write("Laois Price Range") 
-		st.altair_chart(Laois)
+		elif Boxplot == "Laois":
+			Laois= alt.Chart(Laois_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='blue') 
+			st.write("Laois Price Range") 
+			st.altair_chart(Laois)
 
-	elif Boxplot == "Kilkenny":
-		Kilkenny= alt.Chart(Kilkenny_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='grey') 
-		st.write("Kilkenny Price Range") 
-		st.altair_chart(Kilkenny)
+		elif Boxplot == "Kilkenny":
+			Kilkenny= alt.Chart(Kilkenny_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='grey') 
+			st.write("Kilkenny Price Range") 
+			st.altair_chart(Kilkenny)
 
-	elif Boxplot == "Offaly":
-		Offaly= alt.Chart(Offaly_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='brown') 
-		st.write("Offaly Price Range") 
-		st.altair_chart(Offaly)
+		elif Boxplot == "Offaly":
+			Offaly= alt.Chart(Offaly_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='brown') 
+			st.write("Offaly Price Range") 
+			st.altair_chart(Offaly)
 
-	elif Boxplot == "Carlow":
-		Carlow= alt.Chart(Carlow_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='blue') 
-		st.write("Carlow Price Range") 
-		st.altair_chart(Carlow)
+		elif Boxplot == "Carlow":
+			Carlow= alt.Chart(Carlow_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='blue') 
+			st.write("Carlow Price Range") 
+			st.altair_chart(Carlow)
 
-	elif Boxplot == "Leitrim":
-		Leitrim= alt.Chart(Leitrim_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='orange') 
-		st.write("Leitrim Price Range") 
-		st.altair_chart(Leitrim)
+		elif Boxplot == "Leitrim":
+			Leitrim= alt.Chart(Leitrim_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='orange') 
+			st.write("Leitrim Price Range") 
+			st.altair_chart(Leitrim)
 
-	elif Boxplot == "Monaghan":
-		Monaghan= alt.Chart(Monaghan_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='pink') 
-		st.write("Monaghan Price Range") 
-		st.altair_chart(Monaghan)
+		elif Boxplot == "Monaghan":
+			Monaghan= alt.Chart(Monaghan_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='pink') 
+			st.write("Monaghan Price Range") 
+			st.altair_chart(Monaghan)
 
-	elif Boxplot == "Longford":
-		Longford= alt.Chart(Longford_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='cyan') 
-		st.write("Longford Price Range") 
-		st.altair_chart(Longford)
+		elif Boxplot == "Longford":
+			Longford= alt.Chart(Longford_boxplot,width=800, height=800).mark_boxplot().encode(x='County:O', y='Price:Q').configure_mark(opacity=1, color='cyan') 
+			st.write("Longford Price Range") 
+			st.altair_chart(Longford)
 
 
 
@@ -811,15 +820,16 @@ if app_mode == 'Home':
 
 # Histograme Distribution ###########################################################################
 
-	
-	st.header("Price Distribution By Count")
-	st.write("You can select a price range to visualise the distribution by selecting each end of the slider. Note: The wider the range, the longer the loading time.")
-	values = st.slider("Price", float(df.Price.min()),
-	2625000., (5030., 300000.))
-	f = px.histogram(df.query(f"Price.between{values}"), x="Price", nbins=15, title="Price distribution")
-	f.update_xaxes(title="Price")
-	f.update_yaxes(title="No. of listings")
-	st.plotly_chart(f)
+	Price_distribution = st.sidebar.checkbox("Price Distribution By Count")
+	if Price_distribution:
+		st.header("Price Distribution By Count")
+		st.write("You can select a price range to visualise the distribution by selecting each end of the slider. Note: The wider the range, the longer the loading time.")
+		values = st.slider("Price", float(df.Price.min()),
+		2625000., (5030., 300000.))
+		f = px.histogram(df.query(f"Price.between{values}"), x="Price", nbins=15, title="Price distribution")
+		f.update_xaxes(title="Price")
+		f.update_yaxes(title="No. of listings")
+		st.plotly_chart(f)
 
 
 
