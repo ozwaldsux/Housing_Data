@@ -6,12 +6,13 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-streamlit = "*"
 pandas = "*"
+streamlit = "*"
+numpy = "*"
 datetime = "*"
+plotly-express = "*"
 altair = "*"
 pydeck = "*"
-json = "*"
 
 [requires]
 python_version = "3.7"
